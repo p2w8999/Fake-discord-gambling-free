@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Central — Discord</title>
+    <meta name="description" content="A feature-rich fake Discord chat with a casino bot, economy system, and more.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ── Login Modal ───────────────────────────────────────────────────── -->
+    <div id="login-overlay" class="overlay">
+        <div class="login-box">
+            <div class="login-logo"><i class="fab fa-discord"></i></div>
+            <h2>Welcome Back!</h2>
+            <p>We're so excited to see you again!</p>
+
+            <!-- Saved accounts list -->
+            <div id="saved-accounts-section" style="display:none;">
+                <div class="saved-accounts-label">SAVED ACCOUNTS</div>
+                <div id="saved-accounts-list"></div>
+                <div class="divider-text">— or enter a new name —</div>
+            </div>
+
+            <div class="input-group">
+                <label for="username-input">ACCOUNT NAME <span class="required">*</span></label>
+                <input type="text" id="username-input" placeholder="Enter a username..." autocomplete="off" maxlength="32">
+            </div>
+            <button id="login-btn">Join Chat</button>
+            <p class="login-hint">Pick any name. Your progress is saved per username.</p>
+        </div>
+    </div>
+
+    <!-- ── Admin Login Modal ──────────────────────────────────────────────── -->
+    <div id="admin-login-overlay" class="overlay" style="display:none;">
+        <div class="login-box">
+            <div class="login-logo" style="background:var(--error-color)"><i class="fas fa-shield-alt"></i></div>
+            <h2>Admin Access</h2>
+            <p>Enter the admin password to unlock owner privileges.</p>
+            <div class="input-group">
+                <label for="admin-password-input">PASSWORD <span class="required">*</span></label>
+                <input type="password" id="admin-password-input" placeholder="Enter password..." autocomplete="off">
+            </div>
+            <button id="admin-login-btn">Unlock Admin</button>
+            <button id="admin-cancel-btn" class="btn-secondary">Cancel</button>
+        </div>
+    </div>
+
+    <!-- ── Switch Account Modal ──────────────────────────────────────────── -->
+    <div id="switch-account-overlay" class="overlay" style="display:none;">
+        <div class="login-box" style="max-width:400px;">
+            <div class="login-logo" style="background:#43b581"><i class="fas fa-user-circle"></i></div>
+            <h2>Switch Account</h2>
+            <p>Your progress is saved per username. Pick a saved account or type a new one.</p>
+
+            <div id="switch-saved-section" style="display:none;">
+                <div class="saved-accounts-label">SAVED ACCOUNTS</div>
+                <div id="switch-saved-list"></div>
+                <div class="divider-text">— or type a new name —</div>
+            </div>
+
+            <div class="input-group" style="margin-top:8px;">
+                <label for="switch-username-input">NEW USERNAME</label>
+                <input type="text" id="switch-username-input" placeholder="Enter a username..." autocomplete="off" maxlength="32">
+            </div>
+            <button id="switch-login-btn">Switch Account</button>
+            <button id="switch-cancel-btn" class="btn-secondary">Stay Logged In</button>
+        </div>
+    </div>
+
+    <!-- ── Toast Notifications ───────────────────────────────────────────── -->
+    <div id="toast-container"></div>
+
+    <!-- ── Main App ──────────────────────────────────────────────────────── -->
+    <div class="app-container" id="app" style="display:none;">
+
+        <!-- Server Nav -->
+        <nav class="server-nav">
+            <div class="server-icon discord-logo" title="Gaming Central">
+                <i class="fab fa-discord"></i>
+            </div>
+            <div class="divider"></div>
+            <div class="server-icon active" title="Gaming Central">
+                <span>GC</span>
+            </div>
+            <div class="server-icon" title="Add a server">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="server-icon explore-icon" title="Explore servers">
+                <i class="fas fa-compass"></i>
+            </div>
+        </nav>
+
+        <!-- Channels Sidebar -->
+        <aside class="channels-sidebar">
+            <div class="server-header">
+                <h3>Gaming Central</h3>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <div class="channels-list" id="channels-list">
+                <div class="category">
+                    <span><i class="fas fa-chevron-down"></i> TEXT CHANNELS</span>
+                    <i class="fas fa-plus" id="admin-create-channel-btn" style="display:none;" title="Create Channel"></i>
+                </div>
+                <!-- Channels injected by JS -->
+            </div>
+
+            <!-- User Controls -->
+            <div class="user-controls">
+                <div class="user-info" id="user-info-click" title="Click to switch account">
+                    <div class="avatar" id="current-user-avatar">U</div>
+                    <div class="details">
+                        <div class="name" id="current-username">User</div>
+                        <div class="status">🟢 Online</div>
+                    </div>
+                </div>
+                <div class="control-icons">
+                    <i class="fas fa-lock" id="admin-toggle-btn" title="Admin Login"></i>
+                    <i class="fas fa-sign-out-alt" id="logout-btn" title="Switch Account" style="color:#43b581"></i>
+                    <i class="fas fa-microphone" title="Mute"></i>
+                    <i class="fas fa-headphones" title="Deafen"></i>
+                    <i class="fas fa-cog" title="Settings"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <div class="channel-info">
+                    <i class="fas fa-hashtag"></i>
+                    <h2 id="channel-name-header">general</h2>
+                    <div class="divider-vertical"></div>
+                    <span class="topic" id="channel-topic-header">Welcome to the server!</span>
+                </div>
+                <div class="header-icons">
+                    <i class="fas fa-user-friends" title="Members — <span id='online-member-count'>3</span> Online"></i>
+                    <span id="online-member-count" class="member-count">3</span>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="header-search-input" placeholder="Search (Ctrl+K)">
+                    </div>
+                    <i class="fas fa-inbox" title="Inbox"></i>
+                    <i class="fas fa-question-circle" title="Help"></i>
+                </div>
+            </header>
+
+            <div class="messages-container" id="messages-container"></div>
+
+            <!-- Typing Indicator -->
+            <div id="typing-indicator" class="typing-indicator-bar" style="display:none;">
+                <span id="current-username-typing">You</span> is typing...
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <!-- Emoji Picker -->
+                <div id="emoji-picker" class="emoji-picker" style="display:none;"></div>
+
+                <div class="input-wrapper">
+                    <i class="fas fa-plus-circle attach-btn" id="attach-btn" title="Upload Image"></i>
+                    <input type="file" id="file-upload" accept="image/*" style="display:none;">
+                    <input type="text" id="chat-input" placeholder="Message #general" autocomplete="off">
+                    <div class="right-icons">
+                        <i class="fas fa-gift" title="Gift a Nitro"></i>
+                        <i class="fas fa-image" title="GIF"></i>
+                        <i class="fas fa-smile" id="emoji-btn" title="Emoji"></i>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Members Sidebar -->
+        <aside class="members-sidebar" id="members-sidebar">
+            <!-- Rendered by JS -->
+        </aside>
+
+    </div>
+
+    <script src="botdata.js"></script>
+    <script src="bot.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
