@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Central — Discord</title>
-    <meta name="description" content="A feature-rich fake Discord chat with a casino bot, economy system, and more.">
+    <title>Discord — Gaming Central</title>
+    <meta name="description" content="A feature-rich fake Discord with multi-server support, AI bot, casino, economy, moderation, music, giveaways, and more.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- ── Login Modal ───────────────────────────────────────────────────── -->
+    <!-- ── Login Modal ─────────────────────────────────────────────────────── -->
     <div id="login-overlay" class="overlay">
         <div class="login-box">
             <div class="login-logo"><i class="fab fa-discord"></i></div>
             <h2>Welcome Back!</h2>
             <p>We're so excited to see you again!</p>
 
-            <!-- Saved accounts list -->
             <div id="saved-accounts-section" style="display:none;">
                 <div class="saved-accounts-label">SAVED ACCOUNTS</div>
                 <div id="saved-accounts-list"></div>
@@ -34,7 +33,7 @@
         </div>
     </div>
 
-    <!-- ── Admin Login Modal ──────────────────────────────────────────────── -->
+    <!-- ── Admin Login Modal ───────────────────────────────────────────────── -->
     <div id="admin-login-overlay" class="overlay" style="display:none;">
         <div class="login-box">
             <div class="login-logo" style="background:var(--error-color)"><i class="fas fa-shield-alt"></i></div>
@@ -49,44 +48,87 @@
         </div>
     </div>
 
-    <!-- ── Switch Account Modal ──────────────────────────────────────────── -->
-    <div id="switch-account-overlay" class="overlay" style="display:none;">
-        <div class="login-box" style="max-width:400px;">
-            <div class="login-logo" style="background:#43b581"><i class="fas fa-user-circle"></i></div>
-            <h2>Switch Account</h2>
-            <p>Your progress is saved per username. Pick a saved account or type a new one.</p>
+    <!-- ── Create Server Modal ────────────────────────────────────────────── -->
+    <div id="create-server-overlay" class="overlay" style="display:none;">
+        <div class="login-box create-server-box">
+            <div class="login-logo" style="background: linear-gradient(135deg, #5865F2, #57F287);">
+                <i class="fas fa-server"></i>
+            </div>
+            <h2>Create Your Server</h2>
+            <p>Give your server a personality with a name, emoji, and description.</p>
 
-            <div id="switch-saved-section" style="display:none;">
-                <div class="saved-accounts-label">SAVED ACCOUNTS</div>
-                <div id="switch-saved-list"></div>
-                <div class="divider-text">— or type a new name —</div>
+            <div class="server-emoji-row">
+                <button id="server-emoji-btn" class="server-emoji-preview" title="Pick emoji">🎮</button>
+                <span class="server-emoji-hint">Click to pick an icon emoji</span>
             </div>
 
-            <div class="input-group" style="margin-top:8px;">
-                <label for="switch-username-input">NEW USERNAME</label>
-                <input type="text" id="switch-username-input" placeholder="Enter a username..." autocomplete="off" maxlength="32">
+            <div id="server-emoji-picker" class="server-emoji-grid" style="display:none;"></div>
+
+            <div class="input-group">
+                <label for="new-server-name">SERVER NAME <span class="required">*</span></label>
+                <input type="text" id="new-server-name" placeholder="My Awesome Server" autocomplete="off" maxlength="50">
             </div>
-            <button id="switch-login-btn">Switch Account</button>
-            <button id="switch-cancel-btn" class="btn-secondary">Stay Logged In</button>
+            <div class="input-group">
+                <label for="new-server-desc">DESCRIPTION</label>
+                <input type="text" id="new-server-desc" placeholder="What's this server about?" autocomplete="off" maxlength="100">
+            </div>
+            <button id="create-server-btn">Create Server</button>
+            <button id="create-server-cancel-btn" class="btn-secondary">Cancel</button>
         </div>
     </div>
 
-    <!-- ── Toast Notifications ───────────────────────────────────────────── -->
+    <!-- ── Server Settings Modal ──────────────────────────────────────────── -->
+    <div id="server-settings-overlay" class="overlay" style="display:none;">
+        <div class="login-box server-settings-box">
+            <div class="login-logo" style="background: #2b2d31; border: 2px solid var(--brand-color);">
+                <i class="fas fa-cog" style="color: var(--brand-color);"></i>
+            </div>
+            <h2>Server Settings</h2>
+            <p id="server-settings-name-display" style="color: var(--brand-color); font-weight: 700;"></p>
+
+            <div class="input-group">
+                <label>RENAME SERVER</label>
+                <input type="text" id="settings-server-name" placeholder="New name..." maxlength="50">
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-section-title">CHANNELS & PERMISSIONS</div>
+                <div id="settings-channels-list"></div>
+            </div>
+
+            <div class="settings-danger-zone">
+                <button id="settings-save-btn" class="btn-success">Save Changes</button>
+                <button id="settings-delete-btn" class="btn-danger">Delete Server</button>
+            </div>
+            <button id="server-settings-cancel-btn" class="btn-secondary" style="margin-top:8px;">Close</button>
+        </div>
+    </div>
+
+    <!-- ── Channel Permission Modal ───────────────────────────────────────── -->
+    <div id="channel-perms-overlay" class="overlay" style="display:none;">
+        <div class="login-box">
+            <h2>Channel Permissions</h2>
+            <p id="channel-perms-title" style="color:var(--brand-color); font-weight:600;"></p>
+            <div id="channel-perms-body"></div>
+            <button id="channel-perms-save-btn">Save Permissions</button>
+            <button id="channel-perms-cancel-btn" class="btn-secondary">Cancel</button>
+        </div>
+    </div>
+
+    <!-- ── Toast Notifications ─────────────────────────────────────────────── -->
     <div id="toast-container"></div>
 
-    <!-- ── Main App ──────────────────────────────────────────────────────── -->
+    <!-- ── Main App ────────────────────────────────────────────────────────── -->
     <div class="app-container" id="app" style="display:none;">
 
-        <!-- Server Nav -->
-        <nav class="server-nav">
-            <div class="server-icon discord-logo" title="Gaming Central">
+        <!-- Server Nav (dynamic) -->
+        <nav class="server-nav" id="server-nav">
+            <div class="server-icon discord-logo" id="home-server-icon" title="Home">
                 <i class="fab fa-discord"></i>
             </div>
             <div class="divider"></div>
-            <div class="server-icon active" title="Gaming Central">
-                <span>GC</span>
-            </div>
-            <div class="server-icon" title="Add a server">
+            <!-- Server icons injected here by JS -->
+            <div class="server-icon add-server-btn" id="add-server-btn" title="Create a Server">
                 <i class="fas fa-plus"></i>
             </div>
             <div class="server-icon explore-icon" title="Explore servers">
@@ -96,12 +138,28 @@
 
         <!-- Channels Sidebar -->
         <aside class="channels-sidebar">
-            <div class="server-header">
-                <h3>Gaming Central</h3>
+            <div class="server-header" id="server-header-btn">
+                <h3 id="server-name-header">Gaming Central</h3>
                 <i class="fas fa-chevron-down"></i>
             </div>
 
+            <!-- Server Banner -->
+            <div class="server-banner">
+                <div class="server-banner-inner">
+                    <span class="server-banner-badge" id="server-banner-badge">🎮 LIVE</span>
+                    <div class="server-banner-text" id="server-banner-text">Active Server</div>
+                    <div class="server-banner-sub" id="server-banner-sub">Join the community!</div>
+                </div>
+            </div>
+
             <div class="channels-list" id="channels-list">
+                <!-- INFO Channels -->
+                <div class="category">
+                    <span><i class="fas fa-chevron-down"></i> INFORMATION</span>
+                </div>
+                <div id="info-channels"></div>
+
+                <!-- TEXT CHANNELS -->
                 <div class="category">
                     <span><i class="fas fa-chevron-down"></i> TEXT CHANNELS</span>
                     <i class="fas fa-plus" id="admin-create-channel-btn" style="display:none;" title="Create Channel"></i>
@@ -115,15 +173,15 @@
                     <div class="avatar" id="current-user-avatar">U</div>
                     <div class="details">
                         <div class="name" id="current-username">User</div>
-                        <div class="status">🟢 Online</div>
+                        <div class="status" id="current-user-status">🟢 Online</div>
                     </div>
                 </div>
                 <div class="control-icons">
                     <i class="fas fa-lock" id="admin-toggle-btn" title="Admin Login"></i>
                     <i class="fas fa-sign-out-alt" id="logout-btn" title="Switch Account" style="color:#43b581"></i>
-                    <i class="fas fa-microphone" title="Mute"></i>
-                    <i class="fas fa-headphones" title="Deafen"></i>
-                    <i class="fas fa-cog" title="Settings"></i>
+                    <i class="fas fa-microphone" title="Mute" id="mic-btn"></i>
+                    <i class="fas fa-headphones" title="Deafen" id="deaf-btn"></i>
+                    <i class="fas fa-cog" title="Settings" id="user-settings-btn"></i>
                 </div>
             </div>
         </aside>
@@ -132,22 +190,32 @@
         <main class="chat-area">
             <header class="chat-header">
                 <div class="channel-info">
-                    <i class="fas fa-hashtag"></i>
+                    <i class="fas fa-hashtag" id="channel-icon-header"></i>
                     <h2 id="channel-name-header">general</h2>
                     <div class="divider-vertical"></div>
                     <span class="topic" id="channel-topic-header">Welcome to the server!</span>
                 </div>
                 <div class="header-icons">
-                    <i class="fas fa-user-friends" title="Members — <span id='online-member-count'>3</span> Online"></i>
+                    <!-- Read-only badge shown when in locked channel -->
+                    <span id="readonly-badge" class="readonly-badge" style="display:none;">
+                        <i class="fas fa-lock"></i> Read-Only
+                    </span>
+                    <i class="fas fa-user-friends" title="Members"></i>
                     <span id="online-member-count" class="member-count">3</span>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" id="header-search-input" placeholder="Search (Ctrl+K)">
                     </div>
+                    <i class="fas fa-bell" title="Notification Settings"></i>
                     <i class="fas fa-inbox" title="Inbox"></i>
                     <i class="fas fa-question-circle" title="Help"></i>
                 </div>
             </header>
+
+            <!-- Slowmode bar -->
+            <div id="slowmode-bar" class="slowmode-bar" style="display:none;">
+                <i class="fas fa-clock"></i> Slowmode is enabled. You can send a message every <span id="slowmode-seconds">?</span> second(s).
+            </div>
 
             <div class="messages-container" id="messages-container"></div>
 
@@ -156,8 +224,14 @@
                 <span id="current-username-typing">You</span> is typing...
             </div>
 
+            <!-- Locked Channel Bar -->
+            <div id="locked-channel-bar" class="locked-channel-bar" style="display:none;">
+                <i class="fas fa-lock"></i>
+                <span id="locked-channel-msg">You don't have permission to send messages in this channel.</span>
+            </div>
+
             <!-- Input Area -->
-            <div class="input-area">
+            <div class="input-area" id="input-area">
                 <!-- Emoji Picker -->
                 <div id="emoji-picker" class="emoji-picker" style="display:none;"></div>
 
