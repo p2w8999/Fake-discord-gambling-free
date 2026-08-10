@@ -1,14 +1,12 @@
 # 📢 Development Status
 
-## ⚠️ Temporary Development Pause
+## 🚧 Update In Development
 
-This project is **temporarily deprecated** and active development has been **paused**.
+Development on this project is **currently active again!** 🎉
 
-The reason is that I'm currently focusing on **Marketplace.io**, where I'm fixing bugs, improving performance, and preparing future updates.
+I'm currently working on the next update, with bug fixes, improvements, new features, and other changes being added.
 
-**Don't worry—this project is NOT cancelled.** ❤️
-
-I've already got plenty of new ideas planned, and development will resume soon.
+This project is **NOT cancelled** ❤️ — development is underway, and I'm working to get the update ready for release.
 
 ---
 
@@ -18,8 +16,10 @@ I've already got plenty of new ideas planned, and development will resume soon.
 
 ---
 
-## ⏳ Next Update
+## 🔨 Current Status
 
-The next update is planned to release in **approximately 2 weeks**.
+**The next update is currently being worked on.**
 
-Stay tuned! 🚀
+I'm actively updating the game right now, so expect new changes and improvements soon! 🚀
+
+Stay tuned for the release! 👀
